@@ -1,0 +1,34 @@
+name: Deploy .NET API to Azure
+
+on:
+  push:
+    branches:
+      - main 
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: 9.0.304
+
+      - name: Restore dependencies
+        run: dotnet restore
+
+      - name: Build
+        run: dotnet build --configuration Release --no-restore
+
+      - name: Publish
+        run: dotnet publish -c Release -o publish
+
+      - name: Deploy to Azure WebApp
+        uses: azure/webapps-deploy@v3
+        with:
+          app-name: ${HealthApp}
+          publish-profile: ${db0e74a3-1fa9-4d27-95ea-e95f2f5ddaeb}
+          package: ./publish

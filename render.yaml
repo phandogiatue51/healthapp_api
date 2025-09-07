@@ -1,0 +1,11 @@
+services:
+  - type: web
+    name: healthapp-api
+    env: dotnet
+    branch: main
+    rootDir: HealthApp
+    buildCommand: dotnet build HealthApp.csproj -c Release
+    startCommand: dotnet bin/Release/net8.0/HealthApp.dll --urls http://0.0.0.0:10000
+    envVars:
+      - key: DOTNET_RUNNING_IN_CONTAINER
+        value: "true"

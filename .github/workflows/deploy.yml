@@ -3,7 +3,8 @@ name: Deploy .NET API to Azure
 on:
   push:
     branches:
-      - main 
+      - main
+
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
@@ -15,7 +16,7 @@ jobs:
       - name: Setup .NET
         uses: actions/setup-dotnet@v3
         with:
-          dotnet-version: 9.0.304
+          dotnet-version: 8.0.x
 
       - name: Restore dependencies
         run: dotnet restore
@@ -26,9 +27,16 @@ jobs:
       - name: Publish
         run: dotnet publish -c Release -o publish
 
+      - name: Login to Azure
+        uses: azure/login@v1
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          client-secret: ${{ secrets.AZURE_CLIENT_SECRET }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
       - name: Deploy to Azure WebApp
         uses: azure/webapps-deploy@v3
         with:
-          app-name: ${HealthApp}
-          publish-profile: ${db0e74a3-1fa9-4d27-95ea-e95f2f5ddaeb}
+          app-name: ${{ secrets.AZURE_WEBAPP_NAME }}
           package: ./publish

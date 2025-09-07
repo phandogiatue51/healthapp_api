@@ -1,5 +1,9 @@
 name: Deploy .NET API to Azure
 
+permissions:
+  id-token: write
+  contents: read
+
 on:
   push:
     branches:
